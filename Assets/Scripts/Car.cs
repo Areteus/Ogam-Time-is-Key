@@ -16,15 +16,40 @@ public class Car : MonoBehaviour
     public Transform BLW; //BackLeftWheel
     public Transform BRW; //BackRightWheel
 
-    // Start is called before the first frame update
-    void Start()
+    public float gasPower = 100f;
+    public float maxSteer = 20f;
+
+
+    public void Update()
     {
-        
+        Vector3 Pos = transform.position; //setting temp variable to vector3.zero
+        Quaternion rot = transform.rotation; // setting temp variable to Quaternion.identity 
+
+        FrontLeftWheel.GetWorldPose(out Pos, out rot); //gets Position and rotation of the wheel collider's tranforms in world space
+        FLW.position = Pos; // sets Position of the wheel collider
+        FLW.rotation = rot; // sets rotation of the wheel collder 
+
+        FrontRightWheel.GetWorldPose(out Pos, out rot);
+        FRW.position = Pos;
+        FRW.rotation = rot * Quaternion.Euler(0, 180, 0);
+
+        BackLeftWheel.GetWorldPose(out Pos, out rot);
+        BLW.position = Pos;
+        BLW.rotation = rot;
+
+        BackRightWheel.GetWorldPose(out Pos, out rot);
+        BRW.position = Pos;
+        BRW.rotation = rot * Quaternion.Euler(0, 180, 0); 
     }
 
-    // Update is called once per frame
-    void Update()
+    public void FixedUpdate()
     {
-        
+        //applying motorTorque to the back wheel of the car so it can move forward and backward with gasPower
+        BackLeftWheel.motorTorque = Input.GetAxis("Vertical") * gasPower;
+        BackRightWheel.motorTorque = Input.GetAxis("Vertical") * gasPower;
+        //applying steer angle to front of the wheel so it can turn left and right with max steer
+        FrontLeftWheel.steerAngle = Input.GetAxis("Horizontal") * maxSteer;
+        FrontRightWheel.steerAngle = Input.GetAxis("Horizontal") * maxSteer;
     }
+
 }
