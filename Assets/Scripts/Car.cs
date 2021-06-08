@@ -19,12 +19,18 @@ public class Car : MonoBehaviour
     public float gasPower = 100f;
     public float maxSteer = 20f;
 
+    private Rigidbody rb;
+    public void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+        rb.centerOfMass = new Vector3(0, -0.5f, 0.3f); 
+    }
 
     public void Update()
     {
         Vector3 Pos = transform.position; //setting temp variable to vector3.zero
         Quaternion rot = transform.rotation; // setting temp variable to Quaternion.identity 
-
+        
         FrontLeftWheel.GetWorldPose(out Pos, out rot); //gets Position and rotation of the wheel collider's tranforms in world space
         FLW.position = Pos; // sets Position of the wheel collider
         FLW.rotation = rot; // sets rotation of the wheel collder 
@@ -38,8 +44,9 @@ public class Car : MonoBehaviour
         BLW.rotation = rot;
 
         BackRightWheel.GetWorldPose(out Pos, out rot);
-        BRW.position = Pos;
+        BRW.transform.position = Pos;
         BRW.rotation = rot * Quaternion.Euler(0, 180, 0); 
+        
     }
 
     public void FixedUpdate()
